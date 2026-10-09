@@ -25,7 +25,7 @@ namespace PhotoAlbum.Controllers
                     Icon        = "🤝"
                 },
                 new() {
-                    Name        = "High School Campus",
+                    Name        = "High School Era",
                     Route       = "School",
                     Description = "Classroom adventures, field trips and academic milestones",
                     CoverImage  = "/media/School/FB_IMG_4823374177006307699.jpg",
@@ -109,7 +109,7 @@ namespace PhotoAlbum.Controllers
         {
             var model = new AlbumPage
             {
-                PageTitle    = "School",
+                PageTitle    = "High School Era",
                 PageSubtitle = "Classroom adventures, field trips and academic milestones",
                 HeroIcon     = "🎓",
                 Media = new List<MediaItem>
@@ -168,7 +168,7 @@ namespace PhotoAlbum.Controllers
         {
             var model = new AlbumPage
             {
-                PageTitle    = "Student",
+                PageTitle    = "Student Life",
                 PageSubtitle = "Campus life, study sessions and the journey through student days",
                 HeroIcon     = "📚",
                 Media = new List<MediaItem>
