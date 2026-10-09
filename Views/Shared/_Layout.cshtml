@@ -26,7 +26,37 @@
                         <span class="nav-icon">🌟</span> Home
                     </a>
                 </li>
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="Childhood" id="nav-childhood">
+                        <span class="nav-icon">🧸</span> Childhood
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="Friends" id="nav-friends">
+                        <span class="nav-icon">🤝</span> Friends
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="School" id="nav-school">
+                        <span class="nav-icon">🎓</span> High School
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="Sports" id="nav-sports">
+                        <span class="nav-icon">🏆</span> Sports
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="Student" id="nav-student">
+                        <span class="nav-icon">📚</span> Student Life
+                    </a>
+                </li>
             </ul>
+            <button class="nav-hamburger" id="nav-toggle" type="button" aria-label="Open navigation menu" aria-controls="nav-links" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
@@ -60,6 +90,23 @@
                 (currentPath === '/' && a.id === 'nav-home')) {
                 a.classList.add('active');
             }
+        });
+
+        const navToggle = document.getElementById('nav-toggle');
+        const navLinks = document.getElementById('nav-links');
+        function closeNav() {
+            navLinks.classList.remove('is-open');
+            navToggle.setAttribute('aria-expanded', 'false');
+            navToggle.setAttribute('aria-label', 'Open navigation menu');
+        }
+        navToggle.addEventListener('click', () => {
+            const isOpen = navLinks.classList.toggle('is-open');
+            navToggle.setAttribute('aria-expanded', String(isOpen));
+            navToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+        });
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') closeNav();
         });
 
         // Scroll shrink
