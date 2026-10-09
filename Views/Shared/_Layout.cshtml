@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A personal photo and video album celebrating childhood, friendship, school, sports and student life." />
+    <title>@ViewData["Title"] — Photo Album</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/album.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- ── Navigation ── -->
+    <nav class="site-nav" id="site-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a class="nav-logo" asp-controller="Album" asp-action="Index" id="nav-logo">
+                <span class="logo-icon">📷</span>
+                <span class="logo-text">Photo Album</span>
+            </a>
+
+            <ul class="nav-links" id="nav-links" role="list">
+                <li>
+                    <a class="nav-link" asp-controller="Album" asp-action="Index" id="nav-home">
+                        <span class="nav-icon">🌟</span> Home
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ── Page Content ── -->
+    <main role="main" id="main-content">
+        @RenderBody()
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="logo-icon">📷</span>
+                <span>Photo Album</span>
+            </div>
+            <nav class="footer-nav" aria-label="Footer navigation">
+                <a asp-controller="Album" asp-action="Index">Home</a>
+            </nav>
+            <p class="footer-copy">&copy; @DateTime.Now.Year Photo Album — Built with ASP.NET Core MVC</p>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+    // Active link highlight and scroll shrink
+    (function () {
+        const currentPath = window.location.pathname.toLowerCase();
+        document.querySelectorAll('.nav-link').forEach(a => {
+            if (a.getAttribute('href').toLowerCase() === currentPath ||
+                (currentPath === '/' && a.id === 'nav-home')) {
+                a.classList.add('active');
+            }
+        });
+
+        // Scroll shrink
+        const nav = document.getElementById('site-nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 60);
+        });
+    }());
+    </script>
+</body>
+</html>

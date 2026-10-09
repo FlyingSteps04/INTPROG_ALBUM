@@ -1,0 +1,135 @@
+@model PhotoAlbum.Models.AlbumPage
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+<!-- Hero Section -->
+<section class="hero" id="page-hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+        <div class="hero-icon animate-float">@Model.HeroIcon</div>
+        <h1 class="hero-title">@Model.PageTitle</h1>
+        <p class="hero-subtitle">@Model.PageSubtitle</p>
+        <div class="hero-divider"></div>
+    </div>
+    <div class="hero-scroll-hint">
+        <span>Scroll to explore</span>
+        <div class="scroll-arrow">↓</div>
+    </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="gallery-section" id="photo-gallery">
+    <div class="section-header">
+        <span class="section-badge">Gallery</span>
+        <h2 class="section-title">@Model.Media.Count Memories</h2>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+        @for (int i = 0; i < Model.Media.Count; i++)
+        {
+            var photo = Model.Media[i];
+            var delay = (i % 6) * 80;
+            <article class="photo-card" id="photo-@(i + 1)" style="animation-delay: @(delay)ms">
+                <div class="photo-card-inner">
+                    <div class="photo-wrapper">
+                        @if (photo.IsVideo)
+                        {
+                            <video class="photo-img photo-video" controls preload="metadata" aria-label="@photo.Title">
+                                <source src="@photo.Src" type="video/mp4" />
+                                Your browser does not support video playback.
+                            </video>
+                        }
+                        else
+                        {
+                            <img src="@photo.Src" alt="@photo.Title" class="photo-img" loading="lazy" />
+                            <div class="photo-overlay">
+                                <div class="overlay-content">
+                                    <p class="overlay-desc">@photo.Description</p>
+                                </div>
+                            </div>
+                        }
+                        <div class="photo-number">@(i + 1)</div>
+                    </div>
+                    <div class="photo-info">
+                        <h3 class="photo-title">@photo.Title</h3>
+                        <p class="photo-desc">@photo.Description</p>
+                    </div>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close lightbox">✕</button>
+    <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous photo">‹</button>
+    <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next photo">›</button>
+    <div class="lightbox-inner">
+        <img src="" alt="" id="lightbox-img" class="lightbox-img" />
+        <div class="lightbox-caption">
+            <h3 id="lightbox-title" class="lightbox-title"></h3>
+            <p id="lightbox-desc" class="lightbox-desc"></p>
+        </div>
+    </div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const cards  = Array.from(document.querySelectorAll('.photo-card'));
+    const photoCards = cards.filter(card => card.querySelector('img.photo-img'));
+    const lb     = document.getElementById('lightbox');
+    const lbImg  = document.getElementById('lightbox-img');
+    const lbTitle = document.getElementById('lightbox-title');
+    const lbDesc  = document.getElementById('lightbox-desc');
+    const lbCounter = document.getElementById('lightbox-counter');
+    let current  = 0;
+
+    // Build photo data array from DOM
+    const photos = photoCards.map(card => ({
+        src  : card.querySelector('.photo-img').src,
+        alt  : card.querySelector('.photo-img').alt,
+        title: card.querySelector('.photo-title').textContent,
+        desc : card.querySelector('.photo-desc').textContent,
+    }));
+
+    function open(idx) {
+        current = (idx + photos.length) % photos.length;
+        lbImg.src        = photos[current].src;
+        lbImg.alt        = photos[current].alt;
+        lbTitle.textContent = photos[current].title;
+        lbDesc.textContent  = photos[current].desc;
+        lbCounter.textContent = `${current + 1} / ${photos.length}`;
+        lb.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+        lb.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    photoCards.forEach((card, i) => card.querySelector('.photo-wrapper').addEventListener('click', () => open(i)));
+    document.getElementById('lightbox-close').addEventListener('click', close);
+    document.getElementById('lightbox-prev').addEventListener('click', () => open(current - 1));
+    document.getElementById('lightbox-next').addEventListener('click', () => open(current + 1));
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+
+    document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('active')) return;
+        if (e.key === 'Escape')      close();
+        if (e.key === 'ArrowLeft')   open(current - 1);
+        if (e.key === 'ArrowRight')  open(current + 1);
+    });
+
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    cards.forEach(c => observer.observe(c));
+}());
+</script>
+}
